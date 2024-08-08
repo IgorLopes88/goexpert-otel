@@ -1,0 +1,14 @@
+### SERVIÇO A
+POST http://localhost:8080/temperature
+Host: localhost:8080
+Content-Type: application/json
+
+{
+    "cep": "11600300"
+}
+
+
+### SERVIÇO B
+GET http://localhost:8081/temperature/11666000
+Host: localhost:8081
+Content-Type: application/json

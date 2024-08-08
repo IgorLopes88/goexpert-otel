@@ -1,0 +1,39 @@
+services:
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin:latest
+    restart: always
+    ports:
+      - 9411:9411
+
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector:latest
+    restart: always
+    volumes:
+      - ./docker/otel:/etc/
+    command: ["--config=/etc/collector-config.yaml"]
+    ports:
+      - "4317:4317"
+      - "4318:4319"
+      - "55679:55679"
+    depends_on:
+      - zipkin
+
+  service-a:
+    container_name: service_a
+    build: ./service_a
+    ports:
+      - "8080:8080"
+    depends_on:
+      - zipkin
+      - otel-collector
+  
+  service-b:
+    container_name: service_b
+    build: ./service_b
+    ports:
+      - "8081:8081"
+    depends_on:
+      - zipkin
+      - otel-collector
